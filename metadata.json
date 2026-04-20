@@ -1,0 +1,8 @@
+{
+  "name": "Conscious",
+  "description": "An AI-powered health, wellness, and sustainable living hub with five interconnected pillars: Mind, Move, Eat, Wear, and Breathe.",
+  "requestFramePermissions": [
+    "camera",
+    "geolocation"
+  ]
+}
