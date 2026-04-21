@@ -57,10 +57,9 @@ export const generateWorkout = async (
     context += ` They specifically want to focus on: ${workoutType}.`;
     prompt = `${context}\n\nProvide an array of 2-3 distinct choices for their workout today.
 1. An at-home or outdoor routine: Provide a highly specific ${workoutType} routine or suggest a YouTube search term for a ${energyLevel} energy ${workoutType} workout. If the weather is nice, suggest they do it outdoors mapping to their local time/weather.
-2. A local studio: Search for 1 or 2 highly-rated local workout studios or classes in New Orleans for ${workoutType} that match a ${energyLevel} energy vibe. Provide the name, a short description, and their website link.
+2. A local studio: Suggest 1 or 2 real or highly-rated local workout studios or classes conceptually for ${workoutType} that match a ${energyLevel} energy vibe.
 
 Format as a clean, encouraging list. Be concise. CRITICAL: Do NOT use any asterisks (*) or markdown bolding. Use dashes (-) for bullets.`;
-    baseConfig.tools = [{ googleSearch: {} }];
   } else {
     prompt = `${context}\n\nProvide 2 distinct choices for their movement routine.
 1. A personalized at-home or outdoor movement routine matching their ${energyLevel} energy. If the weather is nice, suggest doing it outdoors.

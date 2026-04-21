@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, ReactNode } from "react";
+import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
 
 export type Mood = "great" | "good" | "okay" | "stressed" | "anxious" | "tired";
 
@@ -78,12 +78,54 @@ const AppContext = createContext<AppState | undefined>(undefined);
 export const AppProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
-  const [journalEntries, setJournalEntries] = useState<JournalEntry[]>([]);
-  const [meals, setMeals] = useState<Meal[]>([]);
-  const [shoppingList, setShoppingList] = useState<ShoppingItem[]>([]);
-  const [wardrobe, setWardrobe] = useState<WardrobeItem[]>([]);
-  const [workouts, setWorkouts] = useState<Workout[]>([]);
-  const [meditations, setMeditations] = useState<Meditation[]>([]);
+  const [journalEntries, setJournalEntries] = useState<JournalEntry[]>(() => {
+    const saved = localStorage.getItem("journalEntries");
+    return saved ? JSON.parse(saved) : [];
+  });
+  const [meals, setMeals] = useState<Meal[]>(() => {
+    const saved = localStorage.getItem("meals");
+    return saved ? JSON.parse(saved) : [];
+  });
+  const [shoppingList, setShoppingList] = useState<ShoppingItem[]>(() => {
+    const saved = localStorage.getItem("shoppingList");
+    return saved ? JSON.parse(saved) : [];
+  });
+  const [wardrobe, setWardrobe] = useState<WardrobeItem[]>(() => {
+    const saved = localStorage.getItem("wardrobe");
+    return saved ? JSON.parse(saved) : [];
+  });
+  const [workouts, setWorkouts] = useState<Workout[]>(() => {
+    const saved = localStorage.getItem("workouts");
+    return saved ? JSON.parse(saved) : [];
+  });
+  const [meditations, setMeditations] = useState<Meditation[]>(() => {
+    const saved = localStorage.getItem("meditations");
+    return saved ? JSON.parse(saved) : [];
+  });
+
+  useEffect(() => {
+    localStorage.setItem("journalEntries", JSON.stringify(journalEntries));
+  }, [journalEntries]);
+
+  useEffect(() => {
+    localStorage.setItem("meals", JSON.stringify(meals));
+  }, [meals]);
+
+  useEffect(() => {
+    localStorage.setItem("shoppingList", JSON.stringify(shoppingList));
+  }, [shoppingList]);
+
+  useEffect(() => {
+    localStorage.setItem("wardrobe", JSON.stringify(wardrobe));
+  }, [wardrobe]);
+
+  useEffect(() => {
+    localStorage.setItem("workouts", JSON.stringify(workouts));
+  }, [workouts]);
+
+  useEffect(() => {
+    localStorage.setItem("meditations", JSON.stringify(meditations));
+  }, [meditations]);
 
   const addJournalEntry = (entry: JournalEntry) =>
     setJournalEntries((prev) => [entry, ...prev]);
