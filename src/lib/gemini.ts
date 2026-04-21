@@ -150,11 +150,14 @@ export const generateMeditationAudio = async (script: string) => {
 export const generateMeditation = async (
   intention: string,
   recentJournal: string,
-  durationMins: number
+  durationMins: number,
+  localTime?: string
 ) => {
+  let timeContext = localTime ? ` The current local time is ${localTime}. Please ensure your suggested location/setting in the first sentence makes logical sense for this time of day (e.g., do not suggest sitting under the sun if it is 11:00 PM).` : "";
+  
   const response = await ai.models.generateContent({
     model: "gemini-3-flash-preview",
-    contents: `The user wants to meditate for ${durationMins} minutes. Their focus/mood/intention is: "${intention}". Their recent journal entry was: "${recentJournal}". 
+    contents: `The user wants to meditate for ${durationMins} minutes. Their focus/mood/intention is: "${intention}". Their recent journal entry was: "${recentJournal}".${timeContext}
     First, provide a 1-sentence suggestion on where they should meditate based on their intention (e.g., "Since you're feeling anxious, try taking this meditation outside in the grass." or "Find a quiet, comfortable place to lay down.").
     Then, add two newlines, and write a calming guided meditation script broken into exactly 4 or 5 separate paragraphs. The textual length of this script must remain roughly the same regardless of the duration length. Do not use asterisks or markdown, just plain text separated by double newlines.`,
   });

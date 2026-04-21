@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useAppContext } from "../context/AppContext";
 import { generateRecipe, generateShoppingList } from "../lib/gemini";
-import { motion } from "motion/react";
+import { motion, AnimatePresence } from "motion/react";
 import { Utensils, Loader2, Leaf, Plus, ChevronDown, ChevronUp, Check, X, Sparkles } from "lucide-react";
 import Markdown from "react-markdown";
 
@@ -437,40 +437,50 @@ export const Eat: React.FC = () => {
           </div>
           
           {shoppingList.length > 0 && (
-            <div className="space-y-2 mt-4">
-              {shoppingList.map((item) => (
-                <div 
-                  key={item.id} 
-                  className={`flex items-center justify-between p-3 rounded-xl border transition-colors ${
-                    item.isChecked 
-                      ? "bg-stone-50 border-stone-100 opacity-60" 
-                      : "bg-white border-stone-200"
-                  }`}
-                >
-                  <button 
-                    onClick={() => toggleShoppingItem(item.id)}
-                    className="flex items-center gap-3 flex-1 text-left"
-                  >
-                    <div className={`flex items-center justify-center w-6 h-6 rounded-full border ${
-                      item.isChecked 
-                        ? "bg-emerald-500 border-emerald-500 text-white" 
-                        : "border-stone-300"
-                    }`}>
-                      {item.isChecked && <Check size={14} strokeWidth={3} />}
-                    </div>
-                    <span className={`text-stone-800 ${item.isChecked ? "line-through text-stone-500" : ""}`}>
-                      {item.name}
-                    </span>
-                  </button>
-                  <button 
-                    onClick={() => removeShoppingItem(item.id)}
-                    className="p-2 text-stone-400 hover:text-red-500 transition-colors"
-                  >
-                    <X size={18} />
-                  </button>
-                </div>
-              ))}
-            </div>
+            <motion.div layout className="space-y-2 mt-4">
+              <AnimatePresence mode="popLayout">
+                {[...shoppingList]
+                  .sort((a, b) => (a.isChecked === b.isChecked ? 0 : a.isChecked ? 1 : -1))
+                  .map((item) => (
+                    <motion.div 
+                      layout
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.95 }}
+                      transition={{ duration: 0.2 }}
+                      key={item.id} 
+                      className={`flex items-center justify-between p-3 rounded-xl border transition-colors ${
+                        item.isChecked 
+                          ? "bg-stone-50 border-stone-100 opacity-60" 
+                          : "bg-white border-stone-200"
+                      }`}
+                    >
+                      <button 
+                        onClick={() => toggleShoppingItem(item.id)}
+                        className="flex items-center gap-3 flex-1 text-left"
+                      >
+                        <div className={`flex items-center justify-center w-6 h-6 rounded-full border transition-colors ${
+                          item.isChecked 
+                            ? "bg-emerald-500 border-emerald-500 text-white" 
+                            : "border-stone-300"
+                        }`}>
+                          {item.isChecked && <Check size={14} strokeWidth={3} />}
+                        </div>
+                        <span className={`text-stone-800 transition-all ${item.isChecked ? "line-through text-stone-500" : ""}`}>
+                          {item.name}
+                        </span>
+                      </button>
+                      <button 
+                        onClick={() => removeShoppingItem(item.id)}
+                        className="p-2 text-stone-400 hover:text-red-500 transition-colors"
+                      >
+                        <X size={18} />
+                      </button>
+                    </motion.div>
+                  ))
+                }
+              </AnimatePresence>
+            </motion.div>
           )}
         </div>
       </div>

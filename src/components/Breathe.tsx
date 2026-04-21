@@ -60,10 +60,12 @@ export const Breathe: React.FC = () => {
     cleanupAudio();
     
     try {
+      const currentTimeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
       const result = await generateMeditation(
         intention || moodFallback,
         recentJournal,
         duration,
+        currentTimeStr
       );
       setScript(result);
       

@@ -88,7 +88,24 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({
   });
   const [shoppingList, setShoppingList] = useState<ShoppingItem[]>(() => {
     const saved = localStorage.getItem("shoppingList");
-    return saved ? JSON.parse(saved) : [];
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        // Ensure all IDs are strongly unique (migrating old bad state)
+        const seenIds = new Set();
+        return parsed.map((item: ShoppingItem, idx: number) => {
+          let uniqueId = item.id;
+          if (seenIds.has(uniqueId) || !uniqueId) {
+            uniqueId = uniqueId + '-' + idx + '-' + Math.random().toString(36).substr(2, 5);
+          }
+          seenIds.add(uniqueId);
+          return { ...item, id: uniqueId };
+        });
+      } catch (e) {
+        return [];
+      }
+    }
+    return [];
   });
   const [wardrobe, setWardrobe] = useState<WardrobeItem[]>(() => {
     const saved = localStorage.getItem("wardrobe");
@@ -133,7 +150,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({
   
   const addShoppingItem = (name: string) => {
     setShoppingList((prev) => [
-      { id: Date.now().toString(), name, isChecked: false },
+      { id: Date.now().toString() + Math.random().toString(36).substr(2, 9), name, isChecked: false },
       ...prev,
     ]);
   };
